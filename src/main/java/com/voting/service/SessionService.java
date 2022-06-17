@@ -1,6 +1,6 @@
 package com.voting.service;
 
-import com.voting.modal.Session;
+import com.voting.modal.ElectionSession;
 import com.voting.repository.SessionRepository;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -18,12 +18,12 @@ public class SessionService {
 
     private final SessionRepository sessionRepository;
 
-    public Session newSession(Session session) {
-        session.setExpireDate((session.getExpireDate() != null ? session.getExpireDate() : ZonedDateTime.now().plusMinutes(1L)));
-        return this.sessionRepository.save(session);
+    public ElectionSession newSession(ElectionSession electionSession) {
+        electionSession.setExpireDate((electionSession.getExpireDate() != null ? electionSession.getExpireDate() : ZonedDateTime.now().plusMinutes(1L)));
+        return this.sessionRepository.save(electionSession);
     }
 
-    public List<Session> findAll() {
+    public List<ElectionSession> findAll() {
         return this.sessionRepository.findAll();
     }
 

@@ -17,7 +17,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @ExtendWith(SpringExtension.class)
 @WebMvcTest(controllers = SessionController.class)
-class SessionControllerTest {
+class ElectionSessionControllerTest {
 
     @MockBean
     SessionService sessionService;

@@ -41,7 +41,7 @@ public class VoteController {
     }
 
     @GetMapping(ENDPOINT_VOTES_PATH_COUNT_AGENDA_ID)
-    public List<VoteCount> countByAgenda(@NotBlank @PathVariable String agendaId) {
+    public List<VoteCount> countByAgenda(@NotBlank @PathVariable Long agendaId) {
         return this.voteService.countByAgenda(agendaId);
     }
 

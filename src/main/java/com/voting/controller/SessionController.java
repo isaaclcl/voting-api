@@ -1,6 +1,6 @@
 package com.voting.controller;
 
-import com.voting.modal.Session;
+import com.voting.modal.ElectionSession;
 import com.voting.service.SessionService;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -27,14 +27,14 @@ public class SessionController {
     private final SessionService sessionService;
 
     @GetMapping
-    public ResponseEntity<List<Session>> listAll() {
-        return ResponseEntity.ok(this.sessionService.findAll());
+    public List<ElectionSession> listAll() {
+        return this.sessionService.findAll();
     }
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public ResponseEntity<Session> newSession(@Valid @RequestBody Session session) {
-        return ResponseEntity.ok(this.sessionService.newSession(session));
+    public ElectionSession newSession(@Valid @RequestBody ElectionSession electionSession) {
+        return this.sessionService.newSession(electionSession);
     }
 
 

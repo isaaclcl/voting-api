@@ -8,10 +8,8 @@ import static com.voting.constant.ApiConstants.KAFKA_VOTE_TOPIC;
 
 @Slf4j
 public class VoteConsumer {
-
-
     @KafkaListener(topics = KAFKA_VOTE_TOPIC, groupId = KAFKA_VOTE_GROUP)
-    public void listenGroupFoo(String message) {
+    public void listenGroupVote(String message) {
         log.info("Received Message in group foo: " + message);
     }
 

@@ -1,5 +1,7 @@
 package com.voting.service;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.voting.exception.BusinessException;
 import com.voting.exception.DuplicatedKeyException;
 import com.voting.exception.ResourceNotFoundException;
@@ -12,13 +14,13 @@ import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.kafka.support.SendResult;
 import org.springframework.stereotype.Service;
 import org.springframework.util.concurrent.ListenableFuture;
 import org.springframework.util.concurrent.ListenableFutureCallback;
 
+import javax.annotation.Resource;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -38,6 +40,7 @@ import static java.util.Objects.isNull;
 @Slf4j
 public class VoteService {
 
+    @Resource
     private KafkaTemplate<String, String> kafkaTemplate;
 
     private final VoteRepository voteRepository;
@@ -45,16 +48,20 @@ public class VoteService {
     private final SessionRepository sessionRepository;
 
     public Vote newVote(Vote vote) {
-        if (isNull(vote.getSession())) {
+        if (isNull(vote.getElectionSession())) {
             throw new ResourceNotFoundException(ERROR_SESSION_NOT_FOUND);
         }
-        if (ZonedDateTime.now().isAfter(vote.getSession().getExpireDate())) {
+        if (ZonedDateTime.now().isAfter(vote.getElectionSession().getExpireDate())) {
             throw new BusinessException(ERROR_SESSION_EXPIRED);
         }
 
-        Vote voteBySession_agenda_idAndCPF = this.voteRepository.findVoteBySession_Agenda_IdAndCPF(vote.getSession().getAgenda().getId(), vote.getCPF());
+        Vote voteBySession_agenda_idAndCPF = this.voteRepository.findVoteByElectionSession_Agenda_IdAndCPF(vote.getElectionSession().getAgenda().getId(), vote.getCPF());
         if (voteBySession_agenda_idAndCPF == null) {
-            return this.voteRepository.save(vote);
+            Vote saved = this.voteRepository.save(vote);
+            try {
+                this.sendMessage(new ObjectMapper().writeValueAsString(vote));
+            } catch (JsonProcessingException ignored) {}
+            return saved;
         } else {
             throw new DuplicatedKeyException(ERROR_DUPLICATED_VOTE);
         }
@@ -64,10 +71,10 @@ public class VoteService {
         return this.voteRepository.findAll();
     }
 
-    public List<VoteCount> countByAgenda(String agendaID) {
+    public List<VoteCount> countByAgenda(Long agendaID) {
         List<VoteCount> voteCounts = new ArrayList<>();
-        Long yes = this.voteRepository.countVoteBySession_Agenda_IdAndValue(agendaID, SIM);
-        Long no = this.voteRepository.countVoteBySession_Agenda_IdAndValue(agendaID, NAO);
+        Long yes = this.voteRepository.countVoteByElectionSession_Agenda_IdAndChoose(agendaID, SIM);
+        Long no = this.voteRepository.countVoteByElectionSession_Agenda_IdAndChoose(agendaID, NAO);
         voteCounts.add(new VoteCount(SIM, yes));
         voteCounts.add(new VoteCount(NAO, no));
         return voteCounts;

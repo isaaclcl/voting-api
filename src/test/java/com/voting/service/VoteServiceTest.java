@@ -4,7 +4,7 @@ import com.voting.exception.BusinessException;
 import com.voting.exception.DuplicatedKeyException;
 import com.voting.exception.ResourceNotFoundException;
 import com.voting.modal.Agenda;
-import com.voting.modal.Session;
+import com.voting.modal.ElectionSession;
 import com.voting.modal.Vote;
 import com.voting.repository.VoteRepository;
 import org.junit.jupiter.api.Test;
@@ -35,27 +35,23 @@ class VoteServiceTest {
     VoteRepository voteRepository;
 
     Vote getSampleVote() {
-        return new Vote("voteId", getSampleSession(), "CPF", "SIM");
+        return new Vote(1L, getSampleSession(), "CPF", "SIM");
     }
 
     Vote getSampleVoteWithoutSession() {
-        return new Vote("voteId", null, "CPF", "SIM");
+        return new Vote(1L, null, "CPF", "SIM");
     }
 
-    private Session getSampleSession() {
-        Session session = new Session("sessionId", getSampleAgenda());
-        session.setExpireDate(ZonedDateTime.now().plusDays(1L));
-        return session;
+    private ElectionSession getSampleSession() {
+        return new ElectionSession(1L, getSampleAgenda(), ZonedDateTime.now().plusDays(1L));
     }
 
-    private Session getSampleExpiredSession() {
-        Session session = new Session("sessionId", getSampleAgenda());
-        session.setExpireDate(ZonedDateTime.now().minusDays(1L));
-        return session;
+    private ElectionSession getSampleExpiredSession() {
+        return new ElectionSession(1L, getSampleAgenda(),ZonedDateTime.now().minusDays(1L));
     }
 
     private Agenda getSampleAgenda() {
-        return new Agenda("agendaId");
+        return new Agenda(1L);
     }
 
     @Test
@@ -82,9 +78,9 @@ class VoteServiceTest {
     @Test
     void givenVoteWithExpiredSession_whenSave_ThenThrowBusinessException() {
 
-        Session sessionExpired = getSampleExpiredSession();
+        ElectionSession electionSessionExpired = getSampleExpiredSession();
         Vote sampleVote = getSampleVote();
-        sampleVote.setSession(sessionExpired);
+        sampleVote.setElectionSession(electionSessionExpired);
 
         BusinessException thrown = assertThrows(
                 BusinessException.class,
@@ -97,7 +93,7 @@ class VoteServiceTest {
     @Test
     void givenVoteAgain_whenSave_ThenThrowBusinessException() {
         Vote sampleVote = getSampleVote();
-        when(this.voteRepository.findVoteBySession_Agenda_IdAndCPF(sampleVote.getSession().getAgenda().getId(), sampleVote.getCPF())).thenReturn(sampleVote);
+        when(this.voteRepository.findVoteByElectionSession_Agenda_IdAndCPF(sampleVote.getElectionSession().getAgenda().getId(), sampleVote.getCPF())).thenReturn(sampleVote);
 
         DuplicatedKeyException thrown = assertThrows(
                 DuplicatedKeyException.class,

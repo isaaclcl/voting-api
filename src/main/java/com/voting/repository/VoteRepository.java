@@ -1,13 +1,13 @@
 package com.voting.repository;
 
 import com.voting.modal.Vote;
-import org.springframework.data.mongodb.repository.MongoRepository;
+import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface VoteRepository extends MongoRepository<Vote, String> {
-    Vote findVoteBySession_Agenda_IdAndCPF(String agendaId, String CPF);
+public interface VoteRepository extends JpaRepository<Vote, Long> {
+    Vote findVoteByElectionSession_Agenda_IdAndCPF(Long agendaId, String CPF);
 
-    Long countVoteBySession_Agenda_IdAndValue(String agendaId, String value);
+    Long countVoteByElectionSession_Agenda_IdAndChoose(Long agendaId, String choose);
 
 }

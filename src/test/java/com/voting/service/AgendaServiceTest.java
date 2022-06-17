@@ -29,7 +29,7 @@ class AgendaServiceTest {
     AgendaRepository agendaRepository;
 
     Agenda getSample() {
-        return new Agenda("agendaId");
+        return new Agenda(1L);
     }
 
     @Test

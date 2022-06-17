@@ -14,7 +14,7 @@ public class AgendaService {
     private final AgendaRepository agendaRepository;
 
     public Agenda newAgenda() {
-        return this.agendaRepository.save(Agenda.builder().build());
+        return this.agendaRepository.save(new Agenda());
     }
 
     public List<Agenda> findAll() {
