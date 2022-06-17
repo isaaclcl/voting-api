@@ -13,17 +13,14 @@ import org.springframework.kafka.core.DefaultKafkaConsumerFactory;
 import java.util.HashMap;
 import java.util.Map;
 
+import static com.voting.constant.ApiConstants.KAFKA_VOTE_GROUP;
+
 @EnableKafka
 @Configuration
 public class KafkaConsumerConfig {
 
     @Value(value = "${kafka.bootstrapAddress}")
     private String bootstrapAddress;
-
-    @Value(value = "${kafka.groupId}")
-    private String groupId;
-
-
 
     @Bean
     public ConsumerFactory<String, String> consumerFactory() {
@@ -33,7 +30,7 @@ public class KafkaConsumerConfig {
                 bootstrapAddress);
         props.put(
                 ConsumerConfig.GROUP_ID_CONFIG,
-                groupId);
+                KAFKA_VOTE_GROUP);
         props.put(
                 ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG,
                 StringDeserializer.class);

@@ -10,6 +10,8 @@ import org.springframework.kafka.core.KafkaAdmin;
 import java.util.HashMap;
 import java.util.Map;
 
+import static com.voting.constant.ApiConstants.KAFKA_VOTE_TOPIC;
+
 @Configuration
 public class KafkaTopicConfig {
 
@@ -25,6 +27,6 @@ public class KafkaTopicConfig {
 
     @Bean
     public NewTopic topic1() {
-        return new NewTopic("voting", 1, (short) 1);
+        return new NewTopic(KAFKA_VOTE_TOPIC, 1, (short) 1);
     }
 }

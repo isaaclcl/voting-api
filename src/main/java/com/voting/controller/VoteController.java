@@ -18,8 +18,11 @@ import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
 import java.util.List;
 
+import static com.voting.constant.ApiConstants.ENDPOINT_VOTES;
+import static com.voting.constant.ApiConstants.ENDPOINT_VOTES_PATH_COUNT_AGENDA_ID;
+
 @RestController
-@RequestMapping("/votes")
+@RequestMapping(ENDPOINT_VOTES)
 @Getter
 @RequiredArgsConstructor
 public class VoteController {
@@ -37,7 +40,7 @@ public class VoteController {
         return this.voteService.newVote(vote);
     }
 
-    @GetMapping("/count/{agendaId}")
+    @GetMapping(ENDPOINT_VOTES_PATH_COUNT_AGENDA_ID)
     public List<VoteCount> countByAgenda(@NotBlank @PathVariable String agendaId) {
         return this.voteService.countByAgenda(agendaId);
     }

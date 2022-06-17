@@ -22,8 +22,13 @@ import org.springframework.util.concurrent.ListenableFutureCallback;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Logger;
 
+import static com.voting.constant.ApiConstants.ERROR_DUPLICATED_VOTE;
+import static com.voting.constant.ApiConstants.ERROR_SESSION_EXPIRED;
+import static com.voting.constant.ApiConstants.ERROR_SESSION_NOT_FOUND;
+import static com.voting.constant.ApiConstants.KAFKA_VOTE_TOPIC;
+import static com.voting.constant.ApiConstants.NAO;
+import static com.voting.constant.ApiConstants.SIM;
 import static java.util.Objects.isNull;
 
 @Service
@@ -38,22 +43,20 @@ public class VoteService {
     private final VoteRepository voteRepository;
 
     private final SessionRepository sessionRepository;
-    @Value(value = "${kafka.voteTopic}")
-    private String voteTopic;
 
     public Vote newVote(Vote vote) {
         if (isNull(vote.getSession())) {
-            throw new ResourceNotFoundException("Session Not Found");
+            throw new ResourceNotFoundException(ERROR_SESSION_NOT_FOUND);
         }
         if (ZonedDateTime.now().isAfter(vote.getSession().getExpireDate())) {
-            throw new BusinessException("Session Expired");
+            throw new BusinessException(ERROR_SESSION_EXPIRED);
         }
 
         Vote voteBySession_agenda_idAndCPF = this.voteRepository.findVoteBySession_Agenda_IdAndCPF(vote.getSession().getAgenda().getId(), vote.getCPF());
         if (voteBySession_agenda_idAndCPF == null) {
             return this.voteRepository.save(vote);
         } else {
-            throw new DuplicatedKeyException("Duplicated Vote");
+            throw new DuplicatedKeyException(ERROR_DUPLICATED_VOTE);
         }
     }
 
@@ -63,17 +66,17 @@ public class VoteService {
 
     public List<VoteCount> countByAgenda(String agendaID) {
         List<VoteCount> voteCounts = new ArrayList<>();
-        Long sim = this.voteRepository.countVoteBySession_Agenda_IdAndValue(agendaID, "SIM");
-        Long nao = this.voteRepository.countVoteBySession_Agenda_IdAndValue(agendaID, "NAO");
-        voteCounts.add(new VoteCount("SIM", sim));
-        voteCounts.add(new VoteCount("NAO", nao));
+        Long yes = this.voteRepository.countVoteBySession_Agenda_IdAndValue(agendaID, SIM);
+        Long no = this.voteRepository.countVoteBySession_Agenda_IdAndValue(agendaID, NAO);
+        voteCounts.add(new VoteCount(SIM, yes));
+        voteCounts.add(new VoteCount(NAO, no));
         return voteCounts;
     }
 
     public void sendMessage(String message) {
 
         ListenableFuture<SendResult<String, String>> future =
-                kafkaTemplate.send(voteTopic, message);
+                kafkaTemplate.send(KAFKA_VOTE_TOPIC, message);
 
         future.addCallback(new ListenableFutureCallback<>() {
 

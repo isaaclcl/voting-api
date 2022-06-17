@@ -13,8 +13,10 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
+import static com.voting.constant.ApiConstants.ENDPOINT_AGENDA;
+
 @RestController
-@RequestMapping("/agendas")
+@RequestMapping(ENDPOINT_AGENDA)
 @Getter
 @RequiredArgsConstructor
 public class AgendaController {

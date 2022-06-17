@@ -16,8 +16,10 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.validation.Valid;
 import java.util.List;
 
+import static com.voting.constant.ApiConstants.ENDPOINT_SESSIONS;
+
 @RestController
-@RequestMapping("/sessions")
+@RequestMapping(ENDPOINT_SESSIONS)
 @Getter
 @RequiredArgsConstructor
 public class SessionController {
