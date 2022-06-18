@@ -42,7 +42,7 @@ class ElectionSessionControllerTest {
         mvc.perform(post("/sessions")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(body))
-                .andExpect(status().isOk());
+                .andExpect(status().isCreated());
     }
 
     @Test
@@ -54,7 +54,7 @@ class ElectionSessionControllerTest {
     }
 
     private String validSession() {
-        return "{\"agenda\":  \"62a946a30aabce5141bce640\"}";
+        return "{\"agenda\":  \"1\"}";
 
     }
 

@@ -1,6 +1,8 @@
 package com.voting.service;
 
-import com.voting.modal.Agenda;
+import com.voting.modal.dto.AgendaDTO;
+import com.voting.modal.mapper.EntityMapper;
+import com.voting.modal.tables.Agenda;
 import com.voting.repository.AgendaRepository;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -32,24 +34,28 @@ class AgendaServiceTest {
         return new Agenda(1L);
     }
 
+    AgendaDTO getSampleDTO(){
+        return EntityMapper.ENTITY_MAPPER.map(this.getSample());
+    }
+
     @Test
     void whenListAllThenReturn200() {
         when(this.agendaRepository.findAll()).thenReturn(List.of(getSample()));
 
-        List<Agenda> all = this.agendaService.findAll();
+        List<AgendaDTO> all = this.agendaService.findAll();
 
         assertNotNull(all);
-        assertEquals(List.of(getSample()), all);
+        assertEquals(List.of(getSampleDTO()), all);
     }
 
     @Test
     void whenSaveThenReturn200() {
         when(this.agendaRepository.save(any(Agenda.class))).thenReturn(getSample());
 
-        Agenda saved = this.agendaService.newAgenda();
+        AgendaDTO saved = this.agendaService.newAgenda();
 
         assertNotNull(saved);
-        assertEquals(getSample(), saved);
+        assertEquals(getSampleDTO(), saved);
     }
 
 }

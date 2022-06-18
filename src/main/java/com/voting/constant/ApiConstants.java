@@ -3,7 +3,7 @@ package com.voting.constant;
 public class ApiConstants {
 
     public static final String ENDPOINT_VOTES = "/votes";
-    public static final String ENDPOINT_VOTES_PATH_COUNT_AGENDA_ID = "/count/{agendaId}";
+    public static final String COUNT_VOTE_BY_AGENDA_ID = "/count/{agendaId}";
     public static final String ENDPOINT_SESSIONS = "/sessions";
     public static final String ENDPOINT_AGENDA = "/agendas";
     public static final String NAO = "NAO";

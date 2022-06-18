@@ -1,15 +1,12 @@
-package com.voting.modal;
+package com.voting.modal.tables;
 
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import com.fasterxml.jackson.datatype.jsr310.ser.ZonedDateTimeSerializer;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.springframework.format.annotation.DateTimeFormat;
+import lombok.ToString;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -18,9 +15,9 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
-import java.time.ZonedDateTime;
 
 @Entity
 @AllArgsConstructor
@@ -29,19 +26,25 @@ import java.time.ZonedDateTime;
 @Builder
 @EqualsAndHashCode
 @NoArgsConstructor
-public class ElectionSession implements Serializable {
+@ToString
+public class Vote implements Serializable {
     @Id
     @Column
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
     @NotNull
     @ManyToOne
     @JoinColumn
-    private Agenda agenda;
+    private ElectionSession electionSession;
 
-    @JsonSerialize(using = ZonedDateTimeSerializer.class)
-    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
+    @NotBlank
     @Column
-    private ZonedDateTime expireDate;
+    private String cpf;
+
+    @NotBlank
+    @Column
+    private String choose;
 
 }
+

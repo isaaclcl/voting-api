@@ -1,14 +1,21 @@
 package com.voting.service;
 
-import com.voting.modal.ElectionSession;
+import com.voting.exception.ResourceNotFoundException;
+import com.voting.modal.dto.ElectionSessionDTO;
+import com.voting.modal.tables.Agenda;
+import com.voting.modal.tables.ElectionSession;
+import com.voting.repository.AgendaRepository;
 import com.voting.repository.SessionRepository;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import org.springframework.stereotype.Service;
 
-import java.time.ZonedDateTime;
 import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
+
+import static com.voting.modal.mapper.EntityMapper.ENTITY_MAPPER;
 
 @Service
 @RequiredArgsConstructor
@@ -17,14 +24,21 @@ import java.util.List;
 public class SessionService {
 
     private final SessionRepository sessionRepository;
+    private final AgendaRepository agendaRepository;
 
-    public ElectionSession newSession(ElectionSession electionSession) {
-        electionSession.setExpireDate((electionSession.getExpireDate() != null ? electionSession.getExpireDate() : ZonedDateTime.now().plusMinutes(1L)));
-        return this.sessionRepository.save(electionSession);
+    public ElectionSessionDTO newSession(ElectionSessionDTO electionSessionDTO) {
+        ElectionSession electionSession = ENTITY_MAPPER.map(electionSessionDTO);
+        Optional<Agenda> agenda = this.agendaRepository.findById(electionSessionDTO.getAgenda());
+        if (agenda.isPresent()){
+            electionSession.setAgenda(agenda.get());
+        } else {
+            throw new ResourceNotFoundException("Agenda Not Found");
+        }
+        return ENTITY_MAPPER.map(this.sessionRepository.save(electionSession));
     }
 
-    public List<ElectionSession> findAll() {
-        return this.sessionRepository.findAll();
+    public List<ElectionSessionDTO> findAll() {
+        return this.sessionRepository.findAll().stream().map(ENTITY_MAPPER::map).collect(Collectors.toList());
     }
 
 }

@@ -1,7 +1,9 @@
 package com.voting.service;
 
-import com.voting.modal.Agenda;
-import com.voting.modal.ElectionSession;
+import com.voting.modal.dto.ElectionSessionDTO;
+import com.voting.modal.tables.Agenda;
+import com.voting.modal.tables.ElectionSession;
+import com.voting.repository.AgendaRepository;
 import com.voting.repository.SessionRepository;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -13,10 +15,13 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.time.ZonedDateTime;
 import java.util.List;
+import java.util.Optional;
 
+import static com.voting.modal.mapper.EntityMapper.ENTITY_MAPPER;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -29,28 +34,35 @@ class ElectionSessionServiceTest {
     @Mock
     SessionRepository sessionRepository;
 
+    @Mock
+    AgendaRepository agendaRepository;
+
     ElectionSession getSample() {
         return new ElectionSession(1L, new Agenda(1L), ZonedDateTime.now());
     }
 
     @Test
     void whenListAllThenReturn200() {
-        when(this.sessionRepository.findAll()).thenReturn(List.of(getSample()));
+        ElectionSession sample = getSample();
+        when(this.sessionRepository.findAll()).thenReturn(List.of(sample));
 
-        List<ElectionSession> all = this.sessionService.findAll();
+        List<ElectionSessionDTO> all = this.sessionService.findAll();
 
         assertNotNull(all);
-        assertEquals(List.of(getSample()), all);
+        assertEquals(ENTITY_MAPPER.map(sample), all.get(0));
     }
 
     @Test
     void whenSaveThenReturn200() {
-        when(this.sessionRepository.save(any(ElectionSession.class))).thenReturn(getSample());
+        ElectionSession sample = getSample();
+        ElectionSessionDTO sessionDTO = ENTITY_MAPPER.map(sample);
+        when(this.agendaRepository.findById(anyLong())).thenReturn(Optional.of(sample.getAgenda()));
+        when(this.sessionRepository.save(any(ElectionSession.class))).thenReturn(sample);
 
-        ElectionSession saved = this.sessionService.newSession(getSample());
+        ElectionSessionDTO saved = this.sessionService.newSession(sessionDTO);
 
         assertNotNull(saved);
-        assertEquals(getSample(), saved);
+        assertEquals(sessionDTO, saved);
     }
 
 }

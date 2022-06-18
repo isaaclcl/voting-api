@@ -11,7 +11,6 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import javax.annotation.Resource;
 
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -24,14 +23,6 @@ class VoteControllerTest {
 
     @Resource
     private MockMvc mvc;
-
-    @Test
-    void whenListAll_thenReturnsStatus200() throws Exception {
-
-        mvc.perform(get("/votes")
-                        .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk());
-    }
 
     @Test
     void givenInputIsValid_whenPost_thenReturnsStatus201() throws Exception {

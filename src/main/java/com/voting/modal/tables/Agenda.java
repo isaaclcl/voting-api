@@ -1,4 +1,4 @@
-package com.voting.modal;
+package com.voting.modal.tables;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

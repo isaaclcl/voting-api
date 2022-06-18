@@ -1,11 +1,10 @@
 package com.voting.controller;
 
-import com.voting.modal.ElectionSession;
+import com.voting.modal.dto.ElectionSessionDTO;
 import com.voting.service.SessionService;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -27,13 +26,13 @@ public class SessionController {
     private final SessionService sessionService;
 
     @GetMapping
-    public List<ElectionSession> listAll() {
+    public List<ElectionSessionDTO> listAll() {
         return this.sessionService.findAll();
     }
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public ElectionSession newSession(@Valid @RequestBody ElectionSession electionSession) {
+    public ElectionSessionDTO newSession(@Valid @RequestBody ElectionSessionDTO electionSession) {
         return this.sessionService.newSession(electionSession);
     }
 
