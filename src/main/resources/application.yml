@@ -1,0 +1,29 @@
+logging:
+    level:
+        org:
+            springframework:
+                data: debug
+spring:
+    datasource:
+        driverClassName: org.h2.Driver
+        password: password
+        url: jdbc:h2:file:./data/voting
+        username: sa
+    jpa:
+        database-platform: org.hibernate.dialect.H2Dialect
+        hibernate:
+            ddl-auto: update
+        properties:
+            hibernate:
+                format_sql: true
+        show-sql: true
+    kafka:
+        bootstrap-servers: localhost:9092
+        group: voting
+        topic: voting
+        consumer:
+            client-id: consumer-voting-id
+            key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+        producer:
+            client-id: producer-voting-id
+            key-serializer: org.apache.kafka.common.serialization.StringSerializer

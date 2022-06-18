@@ -3,6 +3,7 @@ package com.voting.service;
 import com.voting.exception.BusinessException;
 import com.voting.exception.DuplicatedKeyException;
 import com.voting.exception.ResourceNotFoundException;
+import com.voting.messager.VoteProducer;
 import com.voting.modal.dto.VoteCountDTO;
 import com.voting.modal.dto.VoteDTO;
 import com.voting.modal.tables.ElectionSession;
@@ -41,6 +42,8 @@ public class VoteService {
 
     private final SessionRepository sessionRepository;
 
+    private final VoteProducer voteProducer;
+
     public VoteDTO newVote(VoteDTO voteDto) {
         Vote vote = ENTITY_MAPPER.map(voteDto);
         Optional<ElectionSession> electionSession = this.sessionRepository.findById(voteDto.getElectionSession());
@@ -57,6 +60,7 @@ public class VoteService {
         Vote voteBySession_agenda_idAndCPF = this.voteRepository.findVoteByElectionSession_Agenda_IdAndCpf(vote.getElectionSession().getAgenda().getId(), vote.getCpf());
         if (voteBySession_agenda_idAndCPF == null) {
             Vote saved = this.voteRepository.save(vote);
+            this.voteProducer.sendMessage(vote);
             return ENTITY_MAPPER.map(saved);
         } else {
             throw new DuplicatedKeyException(ERROR_DUPLICATED_VOTE);
