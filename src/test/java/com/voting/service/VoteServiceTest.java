@@ -1,5 +1,6 @@
 package com.voting.service;
 
+import com.voting.common.webClient.cpf.CPFClient;
 import com.voting.exception.BusinessException;
 import com.voting.exception.DuplicatedKeyException;
 import com.voting.exception.ResourceNotFoundException;
@@ -42,6 +43,9 @@ class VoteServiceTest {
     @Mock
     SessionRepository sessionRepository;
 
+    @Mock
+    CPFClient cpfClient;
+
     Vote getSampleVote() {
         return new Vote(1L, getSampleSession(), "CPF", "SIM");
     }
@@ -51,11 +55,11 @@ class VoteServiceTest {
     }
 
     private ElectionSession getSampleSession() {
-        return new ElectionSession(1L, getSampleAgenda(), ZonedDateTime.now().plusDays(1L));
+        return  ElectionSession.builder().id(1L).agenda(getSampleAgenda()).expireDate(ZonedDateTime.now().plusDays(1L)).build();
     }
 
     private ElectionSession getSampleExpiredSession() {
-        return new ElectionSession(1L, getSampleAgenda(),ZonedDateTime.now().minusDays(1L));
+        return  ElectionSession.builder().id(1L).agenda(getSampleAgenda()).expireDate(ZonedDateTime.now().minusDays(1L)).build();
     }
 
     private Agenda getSampleAgenda() {

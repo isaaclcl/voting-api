@@ -1,9 +1,10 @@
 package com.voting.service;
 
+import com.voting.common.webClient.cpf.CPFClient;
 import com.voting.exception.BusinessException;
 import com.voting.exception.DuplicatedKeyException;
 import com.voting.exception.ResourceNotFoundException;
-import com.voting.messager.VoteProducer;
+import com.voting.modal.dto.AgendaVoteCountDTO;
 import com.voting.modal.dto.VoteCountDTO;
 import com.voting.modal.dto.VoteDTO;
 import com.voting.modal.tables.ElectionSession;
@@ -22,6 +23,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import static com.voting.constant.ApiConstants.ERROR_CPF_UNABLE_TO_VOTE;
 import static com.voting.constant.ApiConstants.ERROR_DUPLICATED_VOTE;
 import static com.voting.constant.ApiConstants.ERROR_SESSION_EXPIRED;
 import static com.voting.constant.ApiConstants.ERROR_SESSION_NOT_FOUND;
@@ -42,7 +44,7 @@ public class VoteService {
 
     private final SessionRepository sessionRepository;
 
-    private final VoteProducer voteProducer;
+    private final CPFClient cpfClient;
 
     public VoteDTO newVote(VoteDTO voteDto) {
         Vote vote = ENTITY_MAPPER.map(voteDto);
@@ -57,13 +59,18 @@ public class VoteService {
             throw new BusinessException(ERROR_SESSION_EXPIRED);
         }
 
+        if (this.cpfClient.isAbleToVote(vote.getCpf())) {
+            throw new BusinessException(ERROR_CPF_UNABLE_TO_VOTE);
+        }
+
         Vote voteBySession_agenda_idAndCPF = this.voteRepository.findVoteByElectionSession_Agenda_IdAndCpf(vote.getElectionSession().getAgenda().getId(), vote.getCpf());
-        if (voteBySession_agenda_idAndCPF == null) {
-            Vote saved = this.voteRepository.save(vote);
-            this.voteProducer.sendMessage(vote);
-            return ENTITY_MAPPER.map(saved);
-        } else {
+        if (voteBySession_agenda_idAndCPF != null) {
             throw new DuplicatedKeyException(ERROR_DUPLICATED_VOTE);
+        }
+
+        else {
+            Vote saved = this.voteRepository.save(vote);
+            return ENTITY_MAPPER.map(saved);
         }
     }
 
@@ -71,7 +78,7 @@ public class VoteService {
         return this.voteRepository.findAll();
     }
 
-    public List<VoteCountDTO> countByAgenda(Long agendaID) {
+    public AgendaVoteCountDTO countByAgenda(Long agendaID) {
         if (this.agendaRepository.findById(agendaID).isEmpty()){
             throw new ResourceNotFoundException("Agenda Not Found");
         }
@@ -80,9 +87,8 @@ public class VoteService {
         Long no = this.voteRepository.countVoteByElectionSession_Agenda_IdAndChoose(agendaID, NAO);
         voteCounts.add(new VoteCountDTO(SIM, yes));
         voteCounts.add(new VoteCountDTO(NAO, no));
-        return voteCounts;
+        return AgendaVoteCountDTO.builder().agendaId(agendaID).votes(voteCounts).build();
     }
-
 
 
 }

@@ -27,4 +27,10 @@ class ErrorHandlingControllerAdvice {
         return new StandardError(e.getMessage());
     }
 
+    @ExceptionHandler(value = {InfrastructureException.class})
+    @ResponseStatus(value = HttpStatus.REQUEST_TIMEOUT)
+    public StandardError exceptionHandler(InfrastructureException e) {
+        return new StandardError(e.getMessage());
+    }
+
 }

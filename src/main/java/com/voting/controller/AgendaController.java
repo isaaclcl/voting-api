@@ -1,7 +1,7 @@
 package com.voting.controller;
 
 import com.voting.modal.dto.AgendaDTO;
-import com.voting.modal.dto.VoteCountDTO;
+import com.voting.modal.dto.AgendaVoteCountDTO;
 import com.voting.service.AgendaService;
 import com.voting.service.VoteService;
 import lombok.Getter;
@@ -41,7 +41,7 @@ public class AgendaController {
     }
 
     @GetMapping(COUNT_VOTE_BY_AGENDA_ID)
-    public List<VoteCountDTO> countVotes(@PathVariable Long agendaId) {
+    public AgendaVoteCountDTO countVotes(@PathVariable Long agendaId) {
         return this.voteService.countByAgenda(agendaId);
     }
 

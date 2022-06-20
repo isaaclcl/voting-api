@@ -38,7 +38,7 @@ class ElectionSessionServiceTest {
     AgendaRepository agendaRepository;
 
     ElectionSession getSample() {
-        return new ElectionSession(1L, new Agenda(1L), ZonedDateTime.now());
+        return ElectionSession.builder().id(1L).agenda(new Agenda(1L)).expireDate(ZonedDateTime.now()).build();
     }
 
     @Test

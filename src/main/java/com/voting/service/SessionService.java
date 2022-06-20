@@ -1,6 +1,7 @@
 package com.voting.service;
 
 import com.voting.exception.ResourceNotFoundException;
+import com.voting.messager.VoteProducer;
 import com.voting.modal.dto.ElectionSessionDTO;
 import com.voting.modal.tables.Agenda;
 import com.voting.modal.tables.ElectionSession;
@@ -26,6 +27,8 @@ public class SessionService {
     private final SessionRepository sessionRepository;
     private final AgendaRepository agendaRepository;
 
+    private final VoteProducer voteProducer;
+
     public ElectionSessionDTO newSession(ElectionSessionDTO electionSessionDTO) {
         ElectionSession electionSession = ENTITY_MAPPER.map(electionSessionDTO);
         Optional<Agenda> agenda = this.agendaRepository.findById(electionSessionDTO.getAgenda());
@@ -34,7 +37,8 @@ public class SessionService {
         } else {
             throw new ResourceNotFoundException("Agenda Not Found");
         }
-        return ENTITY_MAPPER.map(this.sessionRepository.save(electionSession));
+        ElectionSession saved = this.sessionRepository.save(electionSession);
+        return ENTITY_MAPPER.map(saved);
     }
 
     public List<ElectionSessionDTO> findAll() {

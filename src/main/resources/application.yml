@@ -16,7 +16,7 @@ spring:
         properties:
             hibernate:
                 format_sql: true
-        show-sql: true
+        show-sql: false
     kafka:
         bootstrap-servers: localhost:9092
         group: voting
@@ -27,3 +27,8 @@ spring:
         producer:
             client-id: producer-voting-id
             key-serializer: org.apache.kafka.common.serialization.StringSerializer
+
+cpfEndpoint:
+        url: https://user-info.herokuapp.com/users/
+        timeout: 30
+        retries: 3

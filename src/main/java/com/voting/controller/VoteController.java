@@ -1,6 +1,6 @@
 package com.voting.controller;
 
-import com.voting.modal.dto.VoteCountDTO;
+import com.voting.modal.dto.AgendaVoteCountDTO;
 import com.voting.modal.dto.VoteDTO;
 import com.voting.service.VoteService;
 import lombok.Getter;
@@ -15,7 +15,6 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.constraints.NotBlank;
-import java.util.List;
 
 import static com.voting.constant.ApiConstants.COUNT_VOTE_BY_AGENDA_ID;
 import static com.voting.constant.ApiConstants.ENDPOINT_VOTES;
@@ -35,7 +34,7 @@ public class VoteController {
     }
 
     @GetMapping(COUNT_VOTE_BY_AGENDA_ID)
-    public List<VoteCountDTO> countByAgenda(@NotBlank @PathVariable Long agendaId) {
+    public AgendaVoteCountDTO countByAgenda(@NotBlank @PathVariable Long agendaId) {
         return this.voteService.countByAgenda(agendaId);
     }
 

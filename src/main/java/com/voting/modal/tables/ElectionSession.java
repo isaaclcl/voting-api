@@ -35,6 +35,7 @@ public class ElectionSession implements Serializable {
     @Column
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
     @NotNull
     @ManyToOne
     @JoinColumn
@@ -44,5 +45,8 @@ public class ElectionSession implements Serializable {
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
     @Column
     private ZonedDateTime expireDate;
+
+    @Column(columnDefinition = "boolean default false", nullable = false)
+    private boolean resultSent = false;
 
 }

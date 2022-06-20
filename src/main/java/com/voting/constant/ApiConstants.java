@@ -11,6 +11,7 @@ public class ApiConstants {
     public static final String ERROR_SESSION_NOT_FOUND = "Session Not Found";
     public static final String ERROR_SESSION_EXPIRED = "Session Expired";
     public static final String ERROR_DUPLICATED_VOTE = "Duplicated Vote";
+    public static final String ERROR_CPF_UNABLE_TO_VOTE = "CPF Unable to Vote";
     public static final String KAFKA_VOTE_GROUP = "voting";
     public static final String KAFKA_VOTE_TOPIC = "voting";
 }

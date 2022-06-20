@@ -2,7 +2,7 @@ package com.voting.messager;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.voting.modal.tables.Vote;
+import com.voting.modal.dto.AgendaVoteCountDTO;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -46,9 +46,9 @@ public class VoteProducer {
         });
     }
 
-    public void sendMessage(Vote vote) {
+    public void sendMessage(AgendaVoteCountDTO agendaVoteCountDTO) {
         try {
-            this.sendMessage(new ObjectMapper().writeValueAsString(vote));
+            this.sendMessage(new ObjectMapper().writeValueAsString(agendaVoteCountDTO));
         } catch (JsonProcessingException ignored) {}
 
     }
