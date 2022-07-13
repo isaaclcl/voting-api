@@ -12,7 +12,7 @@ import static com.voting.constant.ApiConstants.KAFKA_VOTE_TOPIC;
 public class VoteConsumer {
     @KafkaListener(topics = KAFKA_VOTE_TOPIC, groupId = KAFKA_VOTE_GROUP)
     public void listenGroupVote(String message) {
-        log.info("Received Message in group foo: " + message);
+        log.info("Received Message in group voting: " + message);
     }
 
 }
