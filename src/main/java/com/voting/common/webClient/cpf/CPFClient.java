@@ -23,7 +23,8 @@ public class CPFClient{
                             .path(cpf)
                             .build())
                     .retrieve()
-                    .onStatus(HttpStatus::isError, clientError -> Mono.error(new InfrastructureException("")))
+                    .onStatus(HttpStatus::is4xxClientError, clientError -> Mono.error(new InfrastructureException("CPF Inválido")))
+                    .onStatus(HttpStatus::isError, clientError -> Mono.error(new InfrastructureException(clientError.logPrefix())))
                     .bodyToMono(clazz)
                     .retry(this.cpfClientConfig.getMaxRetries());
         } catch (Exception ex) {
