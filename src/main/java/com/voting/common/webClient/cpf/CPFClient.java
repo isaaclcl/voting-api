@@ -16,7 +16,7 @@ public class CPFClient{
 
     private final CPFClientConfig cpfClientConfig;
 
-    public <T> Mono<T> sendGetRequest( String cpf, Class<T> clazz) {
+    private <T> Mono<T> sendGetRequest( String cpf, Class<T> clazz) {
         try {
             return this.cpfClientConfig.getApiBaseClient().get()
                     .uri(uriBuilder -> uriBuilder

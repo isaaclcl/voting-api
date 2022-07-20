@@ -7,9 +7,7 @@ import com.voting.modal.tables.Agenda;
 import com.voting.modal.tables.ElectionSession;
 import com.voting.repository.AgendaRepository;
 import com.voting.repository.SessionRepository;
-import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-import lombok.Setter;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -20,8 +18,6 @@ import static com.voting.modal.mapper.EntityMapper.ENTITY_MAPPER;
 
 @Service
 @RequiredArgsConstructor
-@Getter
-@Setter
 public class SessionService {
 
     private final SessionRepository sessionRepository;

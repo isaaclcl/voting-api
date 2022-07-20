@@ -12,9 +12,7 @@ import com.voting.modal.tables.Vote;
 import com.voting.repository.AgendaRepository;
 import com.voting.repository.SessionRepository;
 import com.voting.repository.VoteRepository;
-import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
@@ -33,8 +31,6 @@ import static com.voting.modal.mapper.EntityMapper.ENTITY_MAPPER;
 
 @Service
 @RequiredArgsConstructor
-@Getter
-@Setter
 @Slf4j
 public class VoteService {
 
@@ -59,7 +55,7 @@ public class VoteService {
             throw new BusinessException(ERROR_SESSION_EXPIRED);
         }
 
-        if (this.cpfClient.isAbleToVote(vote.getCpf())) {
+        if (!this.cpfClient.isAbleToVote(vote.getCpf())) {
             throw new BusinessException(ERROR_CPF_UNABLE_TO_VOTE);
         }
 

@@ -46,4 +46,11 @@ class AgendaControllerTest {
                 .andExpect(status().isCreated());
     }
 
+    @Test
+    void whenCountVotesReturnsStatus200() throws Exception {
+        mvc.perform(get(ENDPOINT_AGENDA + "/count/1")
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk());
+    }
+
 }

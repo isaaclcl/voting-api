@@ -1,5 +1,6 @@
 package com.voting.service;
 
+import com.voting.exception.ResourceNotFoundException;
 import com.voting.modal.dto.ElectionSessionDTO;
 import com.voting.modal.tables.Agenda;
 import com.voting.modal.tables.ElectionSession;
@@ -20,13 +21,15 @@ import java.util.Optional;
 import static com.voting.modal.mapper.EntityMapper.ENTITY_MAPPER;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
 @ExtendWith(MockitoExtension.class)
-class ElectionSessionServiceTest {
+class SessionServiceTest {
 
     @InjectMocks
     SessionService sessionService;
@@ -64,5 +67,16 @@ class ElectionSessionServiceTest {
         assertNotNull(saved);
         assertEquals(sessionDTO, saved);
     }
+
+    @Test
+    void givenInValidAgendaIdWhenCountByAgendaThenThrowBusinessException() {
+        when(this.agendaRepository.findById(anyLong())).thenReturn(Optional.empty());
+        ResourceNotFoundException thrown = assertThrows(
+                ResourceNotFoundException.class,
+                () -> this.sessionService.newSession(ENTITY_MAPPER.map(getSample()))
+        );
+        assertTrue(thrown.getMessage().contains("Not Found"));
+    }
+
 
 }
